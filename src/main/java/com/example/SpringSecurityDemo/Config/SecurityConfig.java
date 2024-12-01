@@ -28,7 +28,7 @@ public class SecurityConfig {
 
         http.csrf(customizor->customizor.disable());
         //unable sign up authentication page
-        http.authorizeHttpRequests(request->request.anyRequest().authenticated())
+        http.authorizeHttpRequests(request->request.requestMatchers("register").permitAll().anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         //make session stateless
         //every time you hit the url or make a new request it gives you enew session id
