@@ -1,6 +1,7 @@
 package com.example.SpringSecurityDemo.Config;
 
 
+import com.example.SpringSecurityDemo.Filter.JWTFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +17,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
+    @Autowired
+    private JWTFilter jwtfilter;
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -35,8 +39,9 @@ public class SecurityConfig {
         .httpBasic(Customizer.withDefaults())
         //make session stateless
         //every time you hit the url or make a new request it gives you enew session id
-        .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+        .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtfilter, UsernamePasswordAuthenticationFilter.class);
+        //run filter before userpassword filter
 
         return http.build();
 
